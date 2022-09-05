@@ -6,7 +6,6 @@ const PORT =  process.env.PORT || 5000;
 const userRouter = require("./routes/user.route");
 const dbConnect = require("./utils/dbConnect");
 
-// middleware
 app.use(express.json());
 app.use(cors());
 
