@@ -30,38 +30,45 @@ module.exports.userAll = (req, res, next) => {
   next();
 };
  
- /*UserSaveData  */
+ /*User Save Data  */
 module.exports.userSave = (req, res, next) => {
   const fromData = req.body;
+ if(Object.keys(fromData).length){
+  console.log(fromData);
   const newUserAdd = [...userData, fromData];
   const stringFyUser = JSON.stringify(newUserAdd);
   fs.writeFileSync("./userData.json", stringFyUser);
-  res.send({ message: "successfully save data" });
+  res.send({ message: "successfully save data", success: true});
+ }else{
+  res.send({success: false, message: 'Empty Data Not Allowed'})
+ }
 };
 
 module.exports.userUpdate = (req, res, next) => {
   const { id } = req.params;
-  const found = userData.find(usr => usr.id === parseInt(id));
-  const changes = req.body;
+  console.log('id', id);
+  console.log('update=============');
+  // const found = userData.find(usr => usr.id === parseInt(id));
+  // const changes = req.body;
 
-  if (found.id === parseInt(id)) {
-    const ob = Object.assign(found, changes);
-    const foundFilterId = userData.filter(usr => usr.id !== ob.id);
-    const updatePush = [...foundFilterId, ob];
-    const strUpdate = JSON.stringify(updatePush);
-    fs.writeFileSync("./userData.json", strUpdate);
-    res.status(200).json({
-      messages: true,
-      data: updatePush,
-      status: 200,
-    });
-  } else {
-    res.status(500).json({
-      Status: 500,
-      success: false,
-      messages: "Internal Server Error ",
-    });
-  }
+  // if (found.id === parseInt(id)) {
+  //   const ob = Object.assign(found, changes);
+  //   const foundFilterId = userData.filter(usr => usr.id !== ob.id);
+  //   const updatePush = [...foundFilterId, ob];
+  //   const strUpdate = JSON.stringify(updatePush);
+  //   fs.writeFileSync("./userData.json", strUpdate);
+  //   res.status(200).json({
+  //     messages: true,
+  //     data: updatePush,
+  //     status: 200,
+  //   });
+  // } else {
+  //   res.status(500).json({
+  //     Status: 500,
+  //     success: false,
+  //     messages: "Internal Server Error ",
+  //   });
+  // }
 };
 
 // user/bulk-update
