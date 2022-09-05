@@ -104,7 +104,7 @@ module.exports.userUpdate = (req, res, next) => {
 };
 
 // user/bulk-update
-module.exports.userBulkUpdate = (req, res) => {
+module.exports.userBulkUpdate = (req, res, next) => {
   const bodyUser = req.body;
   const changeUser = bodyUser;
 
@@ -134,6 +134,30 @@ module.exports.userBulkUpdate = (req, res) => {
       Status: 404,
       success: false,
       message: "input the array and update user check",
+    });
+  }
+  next();
+};
+
+module.exports.userDelete = (req, res, next) => {
+  const id = parseInt(req.params.id);
+  const fileData = fs.readFileSync("./userData.json", "utf-8");
+  const data = JSON.parse(fileData);
+
+  if (!id) {
+    res.status(404).json({
+      status: 404,
+      message: "user id is Not found check Number the id",
+      success: false,
+    });
+  } else {
+    const deleted = data.filter(user => user.id !== id);
+    const StringFyUser = JSON.stringify(deleted);
+    fs.writeFileSync("./userData.json", StringFyUser);
+    res.status(200).json({
+      status: 200,
+      message: "successFully Deleted User",
+      success: true,
     });
   }
 };

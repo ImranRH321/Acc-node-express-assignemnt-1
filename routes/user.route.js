@@ -9,5 +9,6 @@ router.route('/all').get(userController.userAll)
 router.route('/save').post(userController.userSave)
 router.route('/update/:id').patch(userController.userUpdate)
 router.route('/bulk-update').patch(userController.userBulkUpdate)
+router.route('/delete/:id').delete(userController.userDelete)
 
 module.exports = router;
