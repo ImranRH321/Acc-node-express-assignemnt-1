@@ -1,29 +1,5 @@
 [
   {
-    "id": 4,
-    "gender": "male",
-    "name": "Botal kHa",
-    "contact": "01718860139",
-    "address": "Khulna",
-    "photoUrl": "https://picsum.photos/200/300"
-  },
-  {
-    "id": 7,
-    "gender": "male",
-    "name": "Botal kHa",
-    "contact": "01718860139",
-    "address": "Khulna",
-    "photoUrl": "https://picsum.photos/200/300"
-  },
-  {
-    "id": 4,
-    "gender": "male",
-    "name": "Botal kHa",
-    "contact": "01718860139",
-    "address": "Khulna",
-    "photoUrl": "https://picsum.photos/200/300"
-  },
-  {
     "id": 6,
     "gender": "Female",
     "name": "Kairun nesa",
@@ -45,6 +21,14 @@
     "name": "Kairun nesa",
     "contact": "444",
     "address": "lalami",
+    "photoUrl": "https://picsum.photos/200/300"
+  },
+  {
+    "id": 4,
+    "gender": "male",
+    "name": "Tomar mon ta diya jao",
+    "contact": "01718860139",
+    "address": "Khulna",
     "photoUrl": "https://picsum.photos/200/300"
   }
 ]

@@ -1,16 +1,15 @@
 const fs = require("fs");
-const path = require("path");
 
 let data = fs.readFileSync("./userData.json", "utf-8");
 const userData = JSON.parse(data);
 
-/* home user home route */
+/* home */
 module.exports.userHome = (req, res, next) => {
   res.send("<h1>Random User Assignment !</h1>");
   next();
 };
 
-/* Random user Data */
+/* Random user */
 module.exports.randomUser = (req, res, next) => {
   const random = Math.floor(Math.random() * 5);
   const oneData = userData.find(el => el.id == random);
@@ -18,7 +17,7 @@ module.exports.randomUser = (req, res, next) => {
   next();
 };
 
-/* All User Data */
+/* All User */
 module.exports.userAll = (req, res, next) => {
   const { limit } = req.query;
   if (limit) {
@@ -29,82 +28,82 @@ module.exports.userAll = (req, res, next) => {
   }
   next();
 };
- 
- /*User Save Data  */
+
+/* Save user*/
 module.exports.userSave = (req, res, next) => {
   const fromData = req.body;
- if(Object.keys(fromData).length){
-  console.log(fromData);
-  const newUserAdd = [...userData, fromData];
-  const stringFyUser = JSON.stringify(newUserAdd);
-  fs.writeFileSync("./userData.json", stringFyUser);
-  res.send({ message: "successfully save data", success: true});
- }else{
-  res.send({success: false, message: 'Empty Data Not Allowed'})
- }
+  if (Object.keys(fromData).length) {
+    console.log(fromData);
+    const newUserAdd = [...userData, fromData];
+    const stringFyUser = JSON.stringify(newUserAdd);
+    fs.writeFileSync("./userData.json", stringFyUser);
+    res.send({ message: "successfully save data", success: true });
+  } else {
+    res.send({ success: false, message: "Empty Data Not Allowed" });
+  }
 };
 
+/* update user */
 module.exports.userUpdate = (req, res, next) => {
-  const { id } = req.params;
-  console.log('id', id);
-  console.log('update=============');
-  // const found = userData.find(usr => usr.id === parseInt(id));
-  // const changes = req.body;
+  const id = parseInt(req.params.id);
+  if (!id) {
+    res.json({ message: "check id number then try again" });
+    return;
+  }
 
-  // if (found.id === parseInt(id)) {
-  //   const ob = Object.assign(found, changes);
-  //   const foundFilterId = userData.filter(usr => usr.id !== ob.id);
-  //   const updatePush = [...foundFilterId, ob];
-  //   const strUpdate = JSON.stringify(updatePush);
-  //   fs.writeFileSync("./userData.json", strUpdate);
-  //   res.status(200).json({
-  //     messages: true,
-  //     data: updatePush,
-  //     status: 200,
-  //   });
-  // } else {
-  //   res.status(500).json({
-  //     Status: 500,
-  //     success: false,
-  //     messages: "Internal Server Error ",
-  //   });
-  // }
+  const foundData = userData.find(user => user.id === parseInt(id));
+  const changeData = req.body;
+  if (foundData) {
+    const changeValue = Object.assign(foundData, changeData);
+    const foundFilterId = userData.filter(usr => usr.id !== changeValue.id);
+    const updateUser = [...foundFilterId, changeValue];
+    const userStringFy = JSON.stringify(updateUser);
+    fs.writeFileSync("./userData.json", userStringFy);
+    res.status(200).json({
+      message: true,
+      data: foundData,
+      status: 200,
+    });
+  } else {
+    res.status(404).send({
+      messages: " found data not exists",
+    });
+  }
 };
 
 // user/bulk-update
 module.exports.userBulkUpdate = (req, res, next) => {
-  const bodyUser = req.body;
-  const changeUser = bodyUser;
+  const changeUser = req.body;
 
   if (Array.isArray(changeUser)) {
-    changeUser.forEach(element => {
-      const id = element.id;
-      const exist = userData.find(user => user.id == parseInt(id));
-      exist.id = element.id ? element.id : exist.id;
-      exist.name = element.name ? element.name : exist.name;
-      exist.contact = element.contact ? element.contact : exist.contact;
-      exist.address = element.address ? element.address : exist.address;
-      exist.photoUrl = element.photoUrl ? element.photoUrl : exist.photoUrl;
+    const body = changeUser.find(userId => userId);
+    const singleId = body.id;
+    const exist = userData.find(user => user.id === singleId);
+    exist.id = body?.id ? body?.id : exist.id;
+    exist.name = body?.name ? body?.name : exist.name;
+    exist.contact = body?.contact ? body?.contact : exist.contact;
+    exist.address = body?.address ? body?.address : exist.address;
+    exist.photoUrl = body?.photoUrl ? body?.photoUrl : exist.photoUrl;
 
-      const updateLight = [...userData, exist];
+    const badIdUser = userData.filter(el => el.id !== singleId);
+    console.log(badIdUser, "---all");
+    const updateLight = [...badIdUser, exist];
 
-      const updateStringify = JSON.stringify(updateLight);
-      console.log(updateStringify);
-      fs.writeFileSync("./userData.json", updateStringify);
-      res.status(200).send({
-        status: 200,
-        message: "Multi user data update",
-        data: exist,
-      });
+    const updateStringify = JSON.stringify(updateLight);
+    console.log(updateLight);
+    fs.writeFileSync("./userData.json", updateStringify);
+    res.status(200).send({
+      status: 200,
+      message: "Multi user data update",
+      data: exist,
     });
   } else {
     res.status(404).json({
       Status: 404,
       success: false,
-      message: "input the array and update user check",
+      message: "Body Data Not found",
     });
   }
-  next();
 };
 
 /* Delete User */

@@ -1,28 +1,26 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const port = 5000;
-
-// var bodyParser = require("body-parser");
-// app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(bodyParser.json());
+const PORT =  process.env.PORT || 5000;
 
 const userRouter = require("./routes/user.route");
+const dbConnect = require("./utils/dbConnect");
 
 // middleware
 app.use(express.json());
 app.use(cors());
 
+dbConnect();
 app.use("/api/user", userRouter);
 
 app.get("/", (req, res) => {
-  res.send("Project is running ");
+  res.send("Assignment is running ");
 });
 
 app.all("*", (req, res) => {
   res.status(404).json({ success: false, messages: "Not Found data" });
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`server is running http://localhost:${PORT}`);
 });
