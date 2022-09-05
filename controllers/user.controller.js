@@ -16,7 +16,7 @@ const userData = JSON.parse(data);
 /* home user home route */
 module.exports.userHome = (req, res, next) => {
   res.send("<h1>WelCome to Random User Assignment here</h1>");
-  res.sendFile(path.join(__dirname + "../views/saveForm.html"));
+  // res.sendFile(path.join(__dirname + "../views/saveForm.html"));
   next();
 };
 
@@ -66,9 +66,74 @@ module.exports.userAll = (req, res, next) => {
 
 module.exports.userSave = (req, res, next) => {
   const fromData = req.body;
-  const newUserAdd = [...userData, fromData] 
-  const stringFyUser = JSON.stringify(newUserAdd) 
-  console.log(stringFyUser, '===============>');
-  fs.writeFileSync('./userData.json', stringFyUser ) 
+  const newUserAdd = [...userData, fromData];
+  const stringFyUser = JSON.stringify(newUserAdd);
+  fs.writeFileSync("./userData.json", stringFyUser);
   res.send("home");
+  /* 
+  check duplicate data 
+  err status code 
+  implement next 
+  */
+  next();
+};
+
+module.exports.userUpdate = (req, res, next) => {
+  const { id } = req.params;
+  const found = userData.find(usr => usr.id === parseInt(id));
+  const changes = req.body;
+
+  if (found.id === parseInt(id)) {
+    const ob = Object.assign(found, changes);
+    const foundFilterId = userData.filter(usr => usr.id !== ob.id);
+    const updatePush = [...foundFilterId, ob];
+    const strUpdate = JSON.stringify(updatePush);
+    fs.writeFileSync("./userData.json", strUpdate);
+    res.status(200).json({
+      messages: true,
+      data: updatePush,
+      status: 200,
+    });
+  } else {
+    res.status(500).json({
+      Status: 500,
+      success: false,
+      messages: "Internal Server Error ",
+    });
+  }
+};
+
+// user/bulk-update
+module.exports.userBulkUpdate = (req, res) => {
+  const bodyUser = req.body;
+  const changeUser = bodyUser;
+
+  if (Array.isArray(changeUser)) {
+    changeUser.forEach(element => {
+      const id = element.id;
+      const exist = userData.find(user => user.id == parseInt(id));
+      exist.id = element.id ? element.id : exist.id;
+      exist.name = element.name ? element.name : exist.name;
+      exist.contact = element.contact ? element.contact : exist.contact;
+      exist.address = element.address ? element.address : exist.address;
+      exist.photoUrl = element.photoUrl ? element.photoUrl : exist.photoUrl;
+
+      const updateLight = [...userData, exist];
+
+      const updateStringify = JSON.stringify(updateLight);
+      console.log(updateStringify);
+      fs.writeFileSync("./userData.json", updateStringify);
+      res.status(200).send({
+        status: 200,
+        message: "Multi user data update",
+        data: exist,
+      });
+    });
+  } else {
+    res.status(404).json({
+      Status: 404,
+      success: false,
+      message: "input the array and update user check",
+    });
+  }
 };

@@ -7,5 +7,7 @@ router.route('/').get(userController.userHome)
 router.route('/random').get(userController.randomUser)  
 router.route('/all').get(userController.userAll)   
 router.route('/save').post(userController.userSave)
+router.route('/update/:id').patch(userController.userUpdate)
+router.route('/bulk-update').patch(userController.userBulkUpdate)
 
 module.exports = router;
