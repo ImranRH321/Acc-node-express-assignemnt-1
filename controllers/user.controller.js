@@ -29,20 +29,14 @@ module.exports.userAll = (req, res, next) => {
   }
   next();
 };
-
+ 
+ /*UserSaveData  */
 module.exports.userSave = (req, res, next) => {
   const fromData = req.body;
-  console.log(fromData);
   const newUserAdd = [...userData, fromData];
   const stringFyUser = JSON.stringify(newUserAdd);
   fs.writeFileSync("./userData.json", stringFyUser);
-  res.send("save");
-  /* 
-  check duplicate data 
-  err status code 
-  implement next 
-  */
-  next();
+  res.send({ message: "successfully save data" });
 };
 
 module.exports.userUpdate = (req, res, next) => {
